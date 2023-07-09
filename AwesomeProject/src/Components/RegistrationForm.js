@@ -1,6 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 import { Pressable } from "react-native";
-import { View, Text, StyleSheet, Image, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { reducer } from "../services/reducer";
+
+const initialState = { login: "", email: "", password: "" };
 
 export const RegistrationForm = () => {
   const [isKeyboardShown, setIsKeyboardShown] = useState(false);
@@ -8,86 +19,122 @@ export const RegistrationForm = () => {
   const [emailFieldOutline, setEmailFieldOutline] = useState(false);
   const [passwordFieldOutline, setPasswordFieldOutline] = useState(false);
 
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const onRegister = () => {
+    console.log(state);
+  };
+
   return (
-    <View
-      style={{
-        ...styles.formContainer,
-        paddingBottom: isKeyboardShown ? 32 : 78,
-      }}>
-      <View style={styles.avatarContainer}>
-        <Pressable style={styles.addAvatarBtn}>
-          <Image
-            source={require("../../assets/images/add.png")}
-            alt="addAvatarBtn"
-          />
-        </Pressable>
-      </View>
-
-      <Text
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View
         style={{
-          fontFamily: "Roboto-500",
-          fontSize: 30,
-          lineHeight: 35.16,
-          letterSpacing: 0.01,
-          textAlign: "center",
-          marginBottom: 32,
+          ...styles.formContainer,
+          paddingBottom: isKeyboardShown ? 32 : 78,
         }}>
-        Реєстрація
-      </Text>
-      <TextInput
-        style={[
-          styles.input,
-          {
-            borderColor: loginFieldOutline ? "#FF6C00" : "#E8E8E8",
-          },
-          styles.notLast,
-        ]}
-        placeholder="Логін"
-        placeholderTextColor="#BDBDBD"
-        onFocus={() => {
-          setIsKeyboardShown(true);
-          setLoginFieldOutline(true);
-          setEmailFieldOutline(false);
-          setPasswordFieldOutline(false);
-        }}
-      />
-      <TextInput
-        style={[
-          {
-            borderColor: emailFieldOutline ? "#FF6C00" : "#E8E8E8",
-          },
-          styles.input,
+        <View style={styles.avatarContainer}>
+          <Pressable style={styles.addAvatarBtn}>
+            <Image
+              source={require("../../assets/images/add.png")}
+              alt="addAvatarBtn"
+            />
+          </Pressable>
+        </View>
 
-          styles.notLast,
-        ]}
-        placeholder="Адреса електронної пошти"
-        placeholderTextColor="#BDBDBD"
-        onFocus={() => {
-          setIsKeyboardShown(true);
-          setEmailFieldOutline(true);
-          setLoginFieldOutline(false);
-          setPasswordFieldOutline(false);
-        }}
-      />
-      <View style={styles.last}>
+        <Text
+          style={{
+            fontFamily: "Roboto-500",
+            fontSize: 30,
+            lineHeight: 35.16,
+            letterSpacing: 0.01,
+            textAlign: "center",
+            marginBottom: 32,
+          }}>
+          Реєстрація
+        </Text>
         <TextInput
+          onChangeText={(text) => dispatch({ type: "login", payload: text })}
           style={[
             styles.input,
             {
-              borderColor: passwordFieldOutline ? "#FF6C00" : "#E8E8E8",
+              borderColor: loginFieldOutline ? "#FF6C00" : "#E8E8E8",
             },
             styles.notLast,
           ]}
-          placeholder="Пароль"
+          placeholder="Логін"
           placeholderTextColor="#BDBDBD"
           onFocus={() => {
             setIsKeyboardShown(true);
-            setPasswordFieldOutline(true);
-            setLoginFieldOutline(false);
+            setLoginFieldOutline(true);
             setEmailFieldOutline(false);
+            setPasswordFieldOutline(false);
           }}
         />
-        <Pressable style={styles.passwordShow}>
+        <TextInput
+          onChangeText={(text) => dispatch({ type: "email", payload: text })}
+          style={[
+            {
+              borderColor: emailFieldOutline ? "#FF6C00" : "#E8E8E8",
+            },
+            styles.input,
+
+            styles.notLast,
+          ]}
+          placeholder="Адреса електронної пошти"
+          placeholderTextColor="#BDBDBD"
+          onFocus={() => {
+            setIsKeyboardShown(true);
+            setEmailFieldOutline(true);
+            setLoginFieldOutline(false);
+            setPasswordFieldOutline(false);
+          }}
+        />
+        <View style={styles.last}>
+          <TextInput
+            onChangeText={(text) =>
+              dispatch({ type: "password", payload: text })
+            }
+            style={[
+              styles.input,
+              {
+                borderColor: passwordFieldOutline ? "#FF6C00" : "#E8E8E8",
+              },
+              styles.notLast,
+            ]}
+            placeholder="Пароль"
+            placeholderTextColor="#BDBDBD"
+            onFocus={() => {
+              setIsKeyboardShown(true);
+              setPasswordFieldOutline(true);
+              setLoginFieldOutline(false);
+              setEmailFieldOutline(false);
+            }}
+          />
+          <Pressable style={styles.passwordShow}>
+            <Text
+              style={{
+                fontFamily: "Roboto-400",
+                fontSize: 16,
+                lineHeight: 18.75,
+                color: "#1B4371",
+              }}>
+              Показати
+            </Text>
+          </Pressable>
+        </View>
+        <Pressable style={styles.submitBtn} onPress={onRegister}>
+          <Text
+            style={{
+              fontFamily: "Roboto-400",
+              fontSize: 16,
+              lineHeight: 18.75,
+              textAlign: "center",
+              color: "#FFFFFF",
+            }}>
+            Зареєстуватися
+          </Text>
+        </Pressable>
+        <View style={styles.invitationToLogin}>
           <Text
             style={{
               fontFamily: "Roboto-400",
@@ -95,46 +142,23 @@ export const RegistrationForm = () => {
               lineHeight: 18.75,
               color: "#1B4371",
             }}>
-            Показати
+            Вже є акаунт?&nbsp;
           </Text>
-        </Pressable>
+          <Pressable>
+            <Text
+              style={{
+                fontFamily: "Roboto-400",
+                fontSize: 16,
+                lineHeight: 18.75,
+                color: "#1B4371",
+                textDecorationLine: "underline",
+              }}>
+              Увійти
+            </Text>
+          </Pressable>
+        </View>
       </View>
-      <Pressable style={styles.submitBtn}>
-        <Text
-          style={{
-            fontFamily: "Roboto-400",
-            fontSize: 16,
-            lineHeight: 18.75,
-            textAlign: "center",
-            color: "#FFFFFF",
-          }}>
-          Зареєстуватися
-        </Text>
-      </Pressable>
-      <View style={styles.invitationToLogin}>
-        <Text
-          style={{
-            fontFamily: "Roboto-400",
-            fontSize: 16,
-            lineHeight: 18.75,
-            color: "#1B4371",
-          }}>
-          Вже є акаунт?&nbsp;
-        </Text>
-        <Pressable>
-          <Text
-            style={{
-              fontFamily: "Roboto-400",
-              fontSize: 16,
-              lineHeight: 18.75,
-              color: "#1B4371",
-              textDecorationLine: "underline",
-            }}>
-            Увійти
-          </Text>
-        </Pressable>
-      </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -177,7 +201,6 @@ const styles = StyleSheet.create({
 
     borderRadius: 8,
     borderWidth: 1,
-    // borderColor: "#E8E8E8",
 
     fontSize: 16,
     fontFamily: "Roboto-400",

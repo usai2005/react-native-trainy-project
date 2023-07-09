@@ -21,8 +21,8 @@ export default function App() {
     <View style={styles.container}>
       <ImageBackground source={backgroundImage} style={styles.backgroundImg}>
         <StatusBar style="auto" />
-        {/* <RegistrationScreen /> */}
-        <LoginScreen />
+        <RegistrationScreen />
+        {/* <LoginScreen /> */}
       </ImageBackground>
     </View>
   );

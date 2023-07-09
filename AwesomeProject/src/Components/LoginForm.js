@@ -1,112 +1,137 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 import { Pressable } from "react-native";
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  TextInput,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
+
+import { reducer } from "../services/reducer";
+
+const initialState = { email: "", password: "" };
 
 export const LoginForm = () => {
   const [isKeyboardShown, setIsKeyboardShown] = useState(false);
   const [emailFieldOutline, setEmailFieldOutline] = useState(false);
   const [passwordFieldOutline, setPasswordFieldOutline] = useState(false);
 
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const onLogin = () => {
+    console.log(state);
+  };
+
   return (
-    <View
-      style={{
-        ...styles.formContainer,
-        paddingBottom: isKeyboardShown ? 32 : 144,
-      }}>
-      <Text
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View
         style={{
-          fontFamily: "Roboto-500",
-          fontSize: 30,
-          lineHeight: 35.16,
-          letterSpacing: 0.01,
-          textAlign: "center",
-          marginBottom: 32,
+          ...styles.formContainer,
+          paddingBottom: isKeyboardShown ? 32 : 144,
         }}>
-        Увійти
-      </Text>
-
-      <TextInput
-        style={[
-          {
-            borderColor: emailFieldOutline ? "#FF6C00" : "#E8E8E8",
-          },
-          styles.input,
-
-          styles.notLast,
-        ]}
-        placeholder="Адреса електронної пошти"
-        placeholderTextColor="#BDBDBD"
-        onFocus={() => {
-          setIsKeyboardShown(true);
-          setEmailFieldOutline(true);
-          setPasswordFieldOutline(false);
-        }}
-      />
-      <View style={styles.last}>
-        <TextInput
-          style={[
-            styles.input,
-            {
-              borderColor: passwordFieldOutline ? "#FF6C00" : "#E8E8E8",
-            },
-            styles.notLast,
-          ]}
-          placeholder="Пароль"
-          placeholderTextColor="#BDBDBD"
-          onFocus={() => {
-            setIsKeyboardShown(true);
-            setPasswordFieldOutline(true);
-            setEmailFieldOutline(false);
-          }}
-        />
-        <Pressable style={styles.passwordShow}>
-          <Text
-            style={{
-              fontFamily: "Roboto-400",
-              fontSize: 16,
-              lineHeight: 18.75,
-              color: "#1B4371",
-            }}>
-            Показати
-          </Text>
-        </Pressable>
-      </View>
-      <Pressable style={styles.submitBtn}>
         <Text
           style={{
-            fontFamily: "Roboto-400",
-            fontSize: 16,
-            lineHeight: 18.75,
+            fontFamily: "Roboto-500",
+            fontSize: 30,
+            lineHeight: 35.16,
+            letterSpacing: 0.01,
             textAlign: "center",
-            color: "#FFFFFF",
+            marginBottom: 32,
           }}>
           Увійти
         </Text>
-      </Pressable>
-      <View style={styles.invitationToLogin}>
-        <Text
-          style={{
-            fontFamily: "Roboto-400",
-            fontSize: 16,
-            lineHeight: 18.75,
-            color: "#1B4371",
-          }}>
-          Немає акаунту?&nbsp;
-        </Text>
-        <Pressable>
+
+        <TextInput
+          onChangeText={(text) => dispatch({ type: "email", payload: text })}
+          style={[
+            {
+              borderColor: emailFieldOutline ? "#FF6C00" : "#E8E8E8",
+            },
+            styles.input,
+
+            styles.notLast,
+          ]}
+          placeholder="Адреса електронної пошти"
+          placeholderTextColor="#BDBDBD"
+          onFocus={() => {
+            setIsKeyboardShown(true);
+            setEmailFieldOutline(true);
+            setPasswordFieldOutline(false);
+          }}
+        />
+        <View style={styles.last}>
+          <TextInput
+            onChangeText={(text) =>
+              dispatch({ type: "password", payload: text })
+            }
+            style={[
+              styles.input,
+              {
+                borderColor: passwordFieldOutline ? "#FF6C00" : "#E8E8E8",
+              },
+              styles.notLast,
+            ]}
+            placeholder="Пароль"
+            placeholderTextColor="#BDBDBD"
+            onFocus={() => {
+              setIsKeyboardShown(true);
+              setPasswordFieldOutline(true);
+              setEmailFieldOutline(false);
+            }}
+          />
+          <Pressable style={styles.passwordShow}>
+            <Text
+              style={{
+                fontFamily: "Roboto-400",
+                fontSize: 16,
+                lineHeight: 18.75,
+                color: "#1B4371",
+              }}>
+              Показати
+            </Text>
+          </Pressable>
+        </View>
+
+        <Pressable style={styles.submitBtn} onPress={onLogin}>
+          <Text
+            style={{
+              fontFamily: "Roboto-400",
+              fontSize: 16,
+              lineHeight: 18.75,
+              textAlign: "center",
+              color: "#FFFFFF",
+            }}>
+            Увійти
+          </Text>
+        </Pressable>
+        <View style={styles.invitationToLogin}>
           <Text
             style={{
               fontFamily: "Roboto-400",
               fontSize: 16,
               lineHeight: 18.75,
               color: "#1B4371",
-              textDecorationLine: "underline",
             }}>
-            Зареєструватися
+            Немає акаунту?&nbsp;
           </Text>
-        </Pressable>
+          <Pressable>
+            <Text
+              style={{
+                fontFamily: "Roboto-400",
+                fontSize: 16,
+                lineHeight: 18.75,
+                color: "#1B4371",
+                textDecorationLine: "underline",
+              }}>
+              Зареєструватися
+            </Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -149,7 +174,6 @@ const styles = StyleSheet.create({
 
     borderRadius: 8,
     borderWidth: 1,
-    // borderColor: "#E8E8E8",
 
     fontSize: 16,
     fontFamily: "Roboto-400",
