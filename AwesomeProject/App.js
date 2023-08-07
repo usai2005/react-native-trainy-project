@@ -1,39 +1,44 @@
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, ImageBackground } from "react-native";
-import { RegistrationScreen } from "./src/Screens/RegistrationScreen";
-import { LoginScreen } from "./src/Screens/LoginScreen";
+import RegistrationScreen from "./src/Screens/RegistrationScreen";
+import LoginScreen from "./src/Screens/LoginScreen";
+import Home from "./src/Screens/Home";
+import "react-native-gesture-handler";
 
-import { useFonts } from "expo-font";
-import backgroundImage from "./assets/images/photo-bg.jpg";
+const MainStack = createStackNavigator();
 
 export default function App() {
-  const [fontsLoaded] = useFonts({
-    "Roboto-400": require("./assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-500": require("./assets/fonts/Roboto-Medium.ttf"),
-  });
-
-  if (!fontsLoaded) {
-    console.log(fontsLoaded);
-    return null;
-  }
-
   return (
-    <View style={styles.container}>
-      <ImageBackground source={backgroundImage} style={styles.backgroundImg}>
-        <StatusBar style="auto" />
-        <RegistrationScreen />
-        {/* <LoginScreen /> */}
-      </ImageBackground>
-    </View>
+    <NavigationContainer>
+      <StatusBar style="auto" />
+      <MainStack.Navigator initialRouteName="Login">
+        <MainStack.Screen
+          name="Registration"
+          component={RegistrationScreen}
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+          name="Home"
+          component={Home}
+          options={{
+            headerShown: false,
+          }}
+        />
+      </MainStack.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  backgroundImg: {
-    flex: 1,
-    justifyContent: "flex-end",
   },
 });
